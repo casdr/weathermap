@@ -1,3 +1,7 @@
+This is  modified version of PHP Network Weathermap (orginal README is below)
+
+The modified version starts at version 0.1 by Neil Lathwood (neil@lathwood.co.uk) and currently includes basic support for picking out nodes and links from your observium install. See INSTALL for details.
+
 This is PHP Network Weathermap, version 0.97b by Howard Jones (howie@thingy.com)
 
 See the docs sub-directory for full HTML documentation, FAQ and example config.
