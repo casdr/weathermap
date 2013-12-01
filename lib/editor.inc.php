@@ -128,11 +128,12 @@ function show_editor_startpage()
         $errormessage .= $configerror.'<p>';
     }
 		
-	if (! $cacti_found && !$ignore_cacti) {
-		$errormessage .= '$cacti_base is not set correctly. Cacti integration will be disabled in the editor.';
-		if ($config_loaded != 1) { 
-            $errormessage .= " You might need to copy editor-config.php-dist to editor-config.php and edit it."; 
-        }
+	if ( !$observium_found && !$ignore_observium) {
+		//$errormessage .= '$cacti_base is not set correctly. Cacti integration will be disabled in the editor.';
+		//$errormessage .= "$observium_found and $ignore_observium";
+		//if ($config_loaded != 1) { 
+            	//$errormessage .= " You might need to copy editor-config.php-dist to editor-config.php and edit it."; 
+        	//}
 	}
 	
 	if ($errormessage != '') {

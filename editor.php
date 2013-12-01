@@ -4,7 +4,7 @@ require_once 'lib/editor.inc.php';
 require_once 'lib/Weathermap.class.php';
 
 // so that you can't have the editor active, and not know about it.
-$ENABLED=false;
+$ENABLED=true;
 
 if(! $ENABLED)
 {
@@ -46,6 +46,11 @@ if( is_dir($observium_base) && file_exists($observium_base."/config.php") )
 {
 	// include the cacti-config, so we know about the database
 	include_once($observium_base."/config.php");
+	//include_once($observium_base."/includes/defaults.inc.php");
+	//include_once($observium_base."/includes/definitions.inc.php");
+	//include_once($observium_base."/includes/functions.php");
+	//include_once($observium_base."html/includes/functions.inc.php");
+	//include_once($observium_base."html/includes/authenticate.inc.php");
 	//$config['base_url'] = $cacti_url;
 	$observium_found = TRUE;
 }
@@ -53,6 +58,11 @@ else
 {
 	$observium_found = FALSE;
 }
+
+//if ($_SESSION['userlevel'] < '5')
+//{
+//  include("$observium_base/html/includes/error-no-perm.inc.php");
+//} else {
 
 //if($observium_found && isset($plugins))
 //{
@@ -1106,7 +1116,7 @@ else
 
 	  <div class="dlgBody">
 		<div class="comment">
-		  Link from '<span id="link_nodename1">%NODE1%</span>' to '<span id="link_nodename2">%NODE2%</span>'
+		  Link from '<span id="link_nodename1">%NAME2%</span>' to '<span id="link_nodename2">%NODE2%</span>'
 		</div>
 
 		<input size="6" name="link_name" type="hidden" />
@@ -1488,4 +1498,5 @@ else
 <?php
 } // if mapname != ''
 // vim:ts=4:sw=4:
+//}
 ?>
