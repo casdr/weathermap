@@ -2,5 +2,6 @@
 2. Edit editor.php, map-poller.php and observium-pick.php and make sure the variables at the start are all ok. Make sure you set $ENABLED=true;
 3. Point your browser to your observium install /weathermap/editor.php (i.e http://observiums.org/weather/editor.php)
 4. Create your maps
-5. Enable the cron process:
-	*/5 * * * * cd /opt/observium/html/weathermap/;php ./map-poller.php >> /dev/null 2>&1
+5. Make the map-poller.php executable by running chmod +x map-poller.php
+6. Enable the cron process:
+	*/5 * * * * cd /opt/observium/html/weathermap/;./map-poller.php >> /dev/null 2>&1
