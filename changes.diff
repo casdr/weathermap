@@ -55,7 +55,7 @@ diff -ur weathermap.orig/editor.php weathermap/editor.php
 -	$config['base_url'] = $cacti_url;
 -	$cacti_found = TRUE;
 +	include_once($observium_base."/config.php");
-+	//include_once($observium_base."/includes/defaults.inc.php");
++	include_once($observium_base."/includes/defaults.inc.php");
 +	//include_once($observium_base."/includes/definitions.inc.php");
 +	//include_once($observium_base."/includes/functions.php");
 +	//include_once($observium_base."html/includes/functions.inc.php");

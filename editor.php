@@ -46,7 +46,7 @@ if( is_dir($observium_base) && file_exists($observium_base."/config.php") )
 {
 	// include the cacti-config, so we know about the database
 	include_once($observium_base."/config.php");
-	//include_once($observium_base."/includes/defaults.inc.php");
+	include_once($observium_base."/includes/defaults.inc.php");
 	//include_once($observium_base."/includes/definitions.inc.php");
 	//include_once($observium_base."/includes/functions.php");
 	//include_once($observium_base."html/includes/functions.inc.php");
