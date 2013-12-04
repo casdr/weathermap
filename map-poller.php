@@ -1,6 +1,9 @@
 #!/usr/bin/env php
 <?php
 
+// Set variables for map-poller.php
+$weathermap_url = '/weathermap/';
+
 if (php_sapi_name() == 'cli') { 
 
 $options = getopt("d");
@@ -36,7 +39,7 @@ if(is_dir($conf_dir)) {
 	if($dh = opendir($conf_dir)) {
 		while (($file = readdir($dh)) !== false) {
 			if( "." != $file && ".." != $file && ".htaccess" != $file && "index.php" != $file){
-				$cmd = "php ./weathermap --config $conf_dir/$file";
+				$cmd = "php ./weathermap --config $conf_dir/$file --image-uri $weathermap_url";
 				$fp = popen($cmd, 'r'); 
 				$read = fread($fp, 1024);
 				echo $read;
