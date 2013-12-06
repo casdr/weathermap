@@ -1,9 +1,9 @@
-Binary files weathermap.orig/.DS_Store and weathermap/.DS_Store differ
+Only in weathermap.orig/: .DS_Store
 Only in weathermap/: .git
 Only in weathermap/: INSTALL
 diff -ur weathermap.orig/README weathermap/README
 --- weathermap.orig/README	2013-03-25 09:40:50.000000000 +0000
-+++ weathermap/README	2013-12-01 19:44:00.000000000 +0000
++++ weathermap/README	2013-12-06 02:15:56.000000000 +0000
 @@ -1,3 +1,7 @@
 +This is  modified version of PHP Network Weathermap (orginal README is below)
 +
@@ -15,9 +15,10 @@ diff -ur weathermap.orig/README weathermap/README
 Only in weathermap.orig/: cacti-pick.php
 Only in weathermap/: changes.diff
 Only in weathermap.orig/configs: simple.conf
+Only in weathermap/: data-pick.php
 diff -ur weathermap.orig/editor-resources/editor.js weathermap/editor-resources/editor.js
 --- weathermap.orig/editor-resources/editor.js	2013-04-02 23:57:10.000000000 +0100
-+++ weathermap/editor-resources/editor.js	2013-12-01 19:43:56.000000000 +0000
++++ weathermap/editor-resources/editor.js	2013-12-06 02:15:56.000000000 +0000
 @@ -92,7 +92,7 @@
      
      if(fromplug===1)
@@ -59,8 +60,8 @@ diff -ur weathermap.orig/editor-resources/editor.js weathermap/editor-resources/
  
 -    // newWindow.location = "cacti-pick.php?command=link_step1";
 -    newWindow.location = "cacti-pick.php?command=link_step1";
-+    // newWindow.location = "observium-pick.php?command=link_step1";
-+    newWindow.location = "observium-pick.php?command=link_step1";
++    // newWindow.location = "data-pick.php?command=link_step1";
++    newWindow.location = "data-pick.php?command=link_step1";
      }
  
  
@@ -80,7 +81,7 @@ diff -ur weathermap.orig/editor-resources/editor.js weathermap/editor-resources/
          }
  
 -        newWindow.location = "cacti-pick.php?command=node_step1";
-+        newWindow.location = "observium-pick.php?command=node_step1";
++        newWindow.location = "data-pick.php?command=node_step1";
      }
  
  function show_context_help(itemid, targetid)
@@ -115,17 +116,8 @@ diff -ur weathermap.orig/editor-resources/editor.js weathermap/editor-resources/
 +}
 diff -ur weathermap.orig/editor.php weathermap/editor.php
 --- weathermap.orig/editor.php	2013-04-10 23:14:36.000000000 +0100
-+++ weathermap/editor.php	2013-12-02 01:11:17.000000000 +0000
-@@ -4,7 +4,7 @@
- require_once 'lib/Weathermap.class.php';
- 
- // so that you can't have the editor active, and not know about it.
--$ENABLED=false;
-+$ENABLED=true;
- 
- if(! $ENABLED)
- {
-@@ -15,9 +15,9 @@
++++ weathermap/editor.php	2013-12-06 02:15:56.000000000 +0000
+@@ -15,10 +15,11 @@
  
  // sensible defaults
  $mapdir='configs';
@@ -136,9 +128,11 @@ diff -ur weathermap.orig/editor.php weathermap/editor.php
 +$observium_url = '/';
 +$ignore_observium=FALSE;
  $configerror = '';
++$whats_installed = '';
  
  $config_loaded = @include_once 'editor-config.php';
-@@ -29,7 +29,7 @@
+ 
+@@ -29,7 +30,7 @@
  
  if( isset($_COOKIE['wmeditor']))
  {
@@ -147,7 +141,7 @@ diff -ur weathermap.orig/editor.php weathermap/editor.php
      
      if( (isset($parts[0])) && (intval($parts[0]) == 1) ) { $use_overlay = TRUE; }
      if( (isset($parts[1])) && (intval($parts[1]) == 1) ) { $use_relative_overlay = TRUE; }
-@@ -42,30 +42,32 @@
+@@ -42,30 +43,37 @@
  }
  
  // check if the goalposts have moved
@@ -174,6 +168,11 @@ diff -ur weathermap.orig/editor.php weathermap/editor.php
 +	//include_once($observium_base."html/includes/authenticate.inc.php");
 +	//$config['base_url'] = $cacti_url;
 +	$observium_found = TRUE;
++        if($config['project_name'] == 'LibreNMS') {
++                $whats_installed = 'LibreNMS';
++        } else {
++                $whats_installed = 'Observium';
++        }
  }
  else
  {
@@ -197,7 +196,7 @@ diff -ur weathermap.orig/editor.php weathermap/editor.php
  
  if(! is_writable($mapdir))
  {
-@@ -940,7 +942,7 @@
+@@ -940,7 +948,7 @@
  <?php
  		// if the cacti config was included properly, then 
  		// this will be non-empty, and we can unhide the cacti links in the Link Properties box
@@ -206,16 +205,16 @@ diff -ur weathermap.orig/editor.php weathermap/editor.php
  		{
  			echo "    .cactilink { display: none; }\n";
  			echo "    .cactinode { display: none; }\n";
-@@ -1055,7 +1057,7 @@
+@@ -1055,7 +1063,7 @@
  		  <tr>
  			<th>'Hover' Graph URL</th>
  			<td><input id="node_hover" name="node_hover" type="text" />
 -			<span class="cactinode"><a id="node_cactipick">[Pick from Cacti]</a></span></td>
-+			<span class="cactinode"><a id="node_observiumpick">[Pick from Observium]</a></span></td>
++			<span class="cactinode"><a id="node_observiumpick">[Pick from <?php echo $whats_installed?>]</a></span></td>
  		  </tr>
  		  <tr>
  			<th>Icon Filename</th>
-@@ -1114,7 +1116,7 @@
+@@ -1114,7 +1122,7 @@
  
  	  <div class="dlgBody">
  		<div class="comment">
@@ -224,18 +223,18 @@ diff -ur weathermap.orig/editor.php weathermap/editor.php
  		</div>
  
  		<input size="6" name="link_name" type="hidden" />
-@@ -1136,8 +1138,8 @@
+@@ -1136,8 +1144,8 @@
  			</tr>
  			<tr>
  			  <th>Data Source</th>
 -			  <td><input id="link_target" name="link_target" type="text" /> <span class="cactilink"><a id="link_cactipick">[Pick
 -			  from Cacti]</a></span></td>
 +			  <td><input id="link_target" name="link_target" type="text" /> <span class="observiumlink"><a id="link_observiumpick">[Pick
-+			  from Observium]</a></span></td>
++			  from <?php echo $whats_installed?>]</a></span></td>
  			</tr>
  			<tr>
  			  <th>Link Width</th>
-@@ -1496,4 +1498,5 @@
+@@ -1496,4 +1504,5 @@
  <?php
  } // if mapname != ''
  // vim:ts=4:sw=4:
@@ -244,7 +243,7 @@ diff -ur weathermap.orig/editor.php weathermap/editor.php
 Only in weathermap/lib: .DS_Store
 diff -ur weathermap.orig/lib/editor.inc.php weathermap/lib/editor.inc.php
 --- weathermap.orig/lib/editor.inc.php	2013-04-02 23:58:42.000000000 +0100
-+++ weathermap/lib/editor.inc.php	2013-12-01 19:43:56.000000000 +0000
++++ weathermap/lib/editor.inc.php	2013-12-06 02:15:56.000000000 +0000
 @@ -128,11 +128,12 @@
          $errormessage .= $configerror.'<p>';
      }
@@ -266,13 +265,12 @@ diff -ur weathermap.orig/lib/editor.inc.php weathermap/lib/editor.inc.php
 Only in weathermap.orig/: logout.php
 Only in weathermap/: map-poller.php
 Only in weathermap.orig/: net-data.txt
-Only in weathermap/: observium-pick.php
 Only in weathermap.orig/: output
 Only in weathermap.orig/: random-bits
 Only in weathermap.orig/: setup.php
 diff -ur weathermap.orig/weathermap weathermap/weathermap
 --- weathermap.orig/weathermap	2013-04-02 20:50:32.000000000 +0100
-+++ weathermap/weathermap	2013-12-04 23:45:04.000000000 +0000
++++ weathermap/weathermap	2013-12-06 02:15:56.000000000 +0000
 @@ -37,6 +37,7 @@
  		"version",
  		"help",
@@ -313,4 +311,3 @@ Only in weathermap.orig/: weathermap-cacti-plugin.css
 Only in weathermap.orig/: weathermap-cacti-plugin.php
 Only in weathermap.orig/: weathermap-cacti-rebuild.php
 Only in weathermap.orig/: weathermap.conf
-Only in weathermap/: weathermap.png
