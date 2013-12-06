@@ -6,20 +6,24 @@ $mapdir='configs';
 $observium_base = '../../';
 $observium_url = '/';
 $ignore_observium=FALSE;
-
 $config['base_url'] = $observium_url;
-
-@include_once('editor-config.php');
+$whats_installed = '';
 
 // check if the goalposts have moved
 if( is_dir($observium_base) && file_exists($observium_base."/config.php") )
 {
 	// include the observium-config, so we know about the database
 	include_once($observium_base."/config.php");
+	include_once($observium_base."/includes/defaults.inc.php");
 	// $config['base_url'] = $observium_url;
 	$config['base_url'] = (isset($config['url_path'])? $config['url_path'] : $observium_url);
 	$observium_found = TRUE;
 	// print "global";
+	if($config['project_name'] == 'LibreNMS') {
+		$whats_installed = 'LibreNMS';
+	} else {
+		$whats_installed = 'Observium';
+	}
 }
 else
 {
@@ -105,13 +109,38 @@ if(isset($_REQUEST['command']) && $_REQUEST["command"]=='link_step1')
 		if(filterstring=='')
 		{
 			$('ul#dslist > li').show();
+			if($('#ignore_desc').is(':checked')) {
+				$("ul#dslist > li:contains('Desc::')").hide();
+			}
 			return;
-		}
 		
-		if(filterstring!=previous)
+		} else if(filterstring!=previous)
 		{	
 				$('ul#dslist > li').hide();
 				$("ul#dslist > li:contains('" + filterstring + "')").show();
+				if($('#ignore_desc').is(':checked')) {
+                         	       $("ul#dslist > li:contains('Desc::')").hide();
+                        	}
+
+		} else if(filterstring==previous)
+		{
+			if($('#ignore_desc').is(':checked')) {
+                        	$("ul#dslist > li:contains('Desc::')").hide();
+                        } else {
+				$('ul#dslist > li').hide();
+				$("ul#dslist > li:contains('" + filterstring + "')").show();
+			}
+		}
+
+	}
+
+	function filterignore()
+	{
+		if($('#ignore_desc').is(':checked')) {
+			$("ul#dslist > li:contains('Desc::')").hide();
+		} else {
+			//$('ul#dslist > li').hide();
+			$("ul#dslist > li:contains('" + previous + "')").show();
 		}
 	}
 
@@ -120,6 +149,10 @@ if(isset($_REQUEST['command']) && $_REQUEST["command"]=='link_step1')
 			var previous = $('input#filterstring').val();
 			setTimeout(function () {filterlist(previous)}, 500);
 		}).show();
+		$('span.ignore').click(function() {
+			var previous = $('input#filterstring').val();
+			setTimeout(function () {filterlist(previous)}, 500);
+		});
 	});
 
         function update_source_step2(graphid,name,portid,ifAlias,ifDesc,ifIndex)
@@ -211,7 +244,6 @@ if(isset($_REQUEST['command']) && $_REQUEST["command"]=='link_step1')
 <?php
 
 	//$SQL_picklist = "select data_local.host_id, data_template_data.local_data_id, data_template_data.name_cache, data_template_data.active, data_template_data.data_source_path from data_local,data_template_data,data_input,data_template where data_local.id=data_template_data.local_data_id and data_input.id=data_template_data.data_input_id and data_local.data_template_id=data_template.id ";
-	//$SQL_picklist = "SELECT 1,2,'Test','Y','/dsad'";
 
 	$host_id = -1;
 	
@@ -231,9 +263,10 @@ if(isset($_REQUEST['command']) && $_REQUEST["command"]=='link_step1')
 	//$SQL_picklist .= " order by name_cache;";
 	
 	 // Link query
-	 //$result = mysql_query("select id,CONCAT_WS('',description,' (',hostname,')') as name from host order by description,hostname");
+	 $result = mysql_query("SELECT device_id,hostname FROM devices ORDER BY hostname");
 	 //$hosts = mysql_fetch_assoc($result);
 	 //$result = mysql_query($SQL_picklist);
+	 $hosts = 1;
 ?>
 
 <h3>Pick a data source:</h3>
@@ -245,22 +278,29 @@ if(sizeof($hosts) > 0) {
 
 	print '<option '.($host_id==-1 ? 'SELECTED' : '' ).' value="-1">Any</option>';
 	print '<option '.($host_id==0 ? 'SELECTED' : '' ).' value="0">None</option>';
-	foreach ($hosts as $host)
+	while ($host = mysql_fetch_assoc($result))
 	{
 		print '<option ';
-		if($host_id==$host['id']) print " SELECTED ";
-		print 'value="'.$host['id'].'">'.$host['name'].'</option>';
+		if($host_id==$host['device_id']) print " SELECTED ";
+		print 'value="'.$host['device_id'].'">'.$host['hostname'].'</option>';
 	}
 	print '</select><br />';
 }
 
 	print '<span class="filter" style="display: none;">Filter: <input id="filterstring" name="filterstring" size="20"> (case-sensitive)<br /></span>';
 	print '<input id="overlib" name="overlib" type="checkbox" value="yes" '.($overlib ? 'CHECKED' : '' ).'> <label for="overlib">Also set OVERLIBGRAPH and INFOURL.</label><br />';
-	print '<input id="aggregate" name="aggregate" type="checkbox" value="yes" '.($aggregate ? 'CHECKED' : '' ).'> <label for="aggregate">Append TARGET to existing one (Aggregate)</label>';
+	print '<input id="aggregate" name="aggregate" type="checkbox" value="yes" '.($aggregate ? 'CHECKED' : '' ).'> <label for="aggregate">Append TARGET to existing one (Aggregate)</label><br />';
+	print '<span class="ignore"><input id="ignore_desc" name="ignore_desc" type="checkbox" value="yes"> <label for="ignore_desc">Ignore blank interface descriptions</label></span>';
 
 	print '</form><div class="listcontainer"><ul id="dslist">';
 
-	$query = "SELECT devices.device_id,hostname,ports.port_id,ports.ifAlias,ports.ifIndex,ports.ifDescr FROM devices LEFT JOIN ports ON devices.device_id=ports.device_id WHERE ports.ignore=0 AND ports.disabled=0 ORDER BY hostname,ports.ifAlias";
+	$query = "SELECT devices.device_id,hostname,ports.port_id,ports.ifAlias,ports.ifIndex,ports.ifDescr FROM devices LEFT JOIN ports ON devices.device_id=ports.device_id WHERE ports.ignore=0 AND ports.disabled=0";
+
+	if($host_id > 0) {
+		$query .= " AND devices.device_id='$host_id'";
+	}
+	
+	$query .= " ORDER BY hostname,ports.ifAlias";
 	$result = mysql_query($query);
 
 	// print $SQL_picklist;
@@ -271,7 +311,7 @@ if(sizeof($hosts) > 0) {
 			while ($queryrows = mysql_fetch_assoc($result)) {
 			echo "<li class=\"row".($i%2)."\">";
 			$key = $queryrows['device_id']."','".$queryrows['hostname']."','".$queryrows['port_id']."','".$queryrows['ifAlias']."','".$queryrows['ifDescr']."','".$queryrows['ifIndex'];
-			echo "<a href=\"#\" onclick=\"update_source_step1('$key')\">". $queryrows['hostname'] . "/" . $queryrows['ifDescr'] . " Desc:" . $queryrows['ifAlias'] . "</a>";
+			echo "<a href=\"#\" onclick=\"update_source_step1('$key')\">". $queryrows['hostname'] . "/" . $queryrows['ifDescr'] . " Desc:" . $queryrows['ifAlias'] . ":</a>";
 			echo "</li>\n";
 			
 			$i++;

@@ -252,8 +252,8 @@ function observiumpicker()
         newWindow.focus();
         }
 
-    // newWindow.location = "observium-pick.php?command=link_step1";
-    newWindow.location = "observium-pick.php?command=link_step1";
+    // newWindow.location = "data-pick.php?command=link_step1";
+    newWindow.location = "data-pick.php?command=link_step1";
     }
 
 
@@ -271,7 +271,7 @@ function nodeobserviumpicker()
         newWindow.focus();
         }
 
-        newWindow.location = "observium-pick.php?command=node_step1";
+        newWindow.location = "data-pick.php?command=node_step1";
     }
 
 function show_context_help(itemid, targetid)
