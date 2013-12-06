@@ -19,6 +19,7 @@ $observium_base = '../../';
 $observium_url = '/';
 $ignore_observium=FALSE;
 $configerror = '';
+$whats_installed = '';
 
 $config_loaded = @include_once 'editor-config.php';
 
@@ -53,6 +54,11 @@ if( is_dir($observium_base) && file_exists($observium_base."/config.php") )
 	//include_once($observium_base."html/includes/authenticate.inc.php");
 	//$config['base_url'] = $cacti_url;
 	$observium_found = TRUE;
+        if($config['project_name'] == 'LibreNMS') {
+                $whats_installed = 'LibreNMS';
+        } else {
+                $whats_installed = 'Observium';
+        }
 }
 else
 {
@@ -1057,7 +1063,7 @@ else
 		  <tr>
 			<th>'Hover' Graph URL</th>
 			<td><input id="node_hover" name="node_hover" type="text" />
-			<span class="cactinode"><a id="node_observiumpick">[Pick from Observium]</a></span></td>
+			<span class="cactinode"><a id="node_observiumpick">[Pick from <?php echo $whats_installed?>]</a></span></td>
 		  </tr>
 		  <tr>
 			<th>Icon Filename</th>
@@ -1139,7 +1145,7 @@ else
 			<tr>
 			  <th>Data Source</th>
 			  <td><input id="link_target" name="link_target" type="text" /> <span class="observiumlink"><a id="link_observiumpick">[Pick
-			  from Observium]</a></span></td>
+			  from <?php echo $whats_installed?>]</a></span></td>
 			</tr>
 			<tr>
 			  <th>Link Width</th>
