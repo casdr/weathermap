@@ -3,6 +3,14 @@
 
 // Set variables for map-poller.php
 $weathermap_url = '/weathermap/';
+//$pathd='/opt/librenms/html/weathermap';
+$pathd='';// THIS NEEDS TO BE SET
+chdir($pathd);
+
+if(empty($pathd)) {
+	echo 'Please set $pathd';
+	exit;
+}
 
 if (php_sapi_name() == 'cli') { 
 

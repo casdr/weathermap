@@ -3,6 +3,7 @@
 	Enter:
 		git clone https://github.com/laf/Weathermap-for-Observium.git weathermap
 2. Edit map-poller.php and data-pick.php and make sure the variables at the start are all ok.
+	**** Please ensure you set $pathd in map-poller.php correctly *****
 3. Within editor.php, make sure you set $ENABLED=true and check the correct url for $weathermap_url;
 4. Make the configs directory writeable by your web server, either chown apache:apache configs/ or chmod 777 configs (I'd highly advise you choose the first option, replace apache:apache with your web servers user and group.)
 5. Point your browser to your install /weathermap/editor.php (i.e http://testurl.org/weathermap/editor.php)
