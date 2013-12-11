@@ -294,7 +294,7 @@ if(sizeof($hosts) > 0) {
 
 	print '</form><div class="listcontainer"><ul id="dslist">';
 
-	$query = "SELECT devices.device_id,hostname,ports.port_id,ports.ifAlias,ports.ifIndex,ports.ifDescr FROM devices LEFT JOIN ports ON devices.device_id=ports.device_id WHERE ports.ignore=0 AND ports.disabled=0";
+	$query = "SELECT devices.device_id,hostname,ports.port_id,ports.ifAlias,ports.ifIndex,ports.ifDescr FROM devices LEFT JOIN ports ON devices.device_id=ports.device_id WHERE ports.disabled=0";
 
 	if($host_id > 0) {
 		$query .= " AND devices.device_id='$host_id'";
