@@ -29,11 +29,6 @@ $weathermap_url = '/weathermap/';
 
 chdir(dirname($argv[0]));
 
-if(empty($pathd)) {
-	echo 'Please set $pathd';
-	exit;
-}
-
 if (php_sapi_name() == 'cli') { 
 
 $options = getopt("d");
