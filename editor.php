@@ -222,6 +222,16 @@ else
 	case 'show_config':
 		header('Content-type: text/plain');
 
+                // Temp fix for CVE-2013-3739 exploit
+                $check_base = realpath($mapdir);
+                $check_path = realpath($mapfile);
+                
+                if($check_path === false || strpos($check_path, $check_base) !== 0)
+                {
+                  echo('Bad mapname');
+                  exit();
+                  break;
+                }
 		$fd = fopen($mapfile,'r');
 		while (!feof($fd))
 		{
