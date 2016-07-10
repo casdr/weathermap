@@ -1,3 +1,19 @@
+
+PHP Weathermap for Observium / LibreNMS
+==============================================
+
+This is a fork of https://github.com/casdr/weathermap - I'm not sure or the
+providence before that. PHP Weathermap is licensed under the GNU Public
+License and the Observium / Weathermap additions are the same.
+
+This fork exists to support our own installations and support or help is
+not offered. It is mainly to support PHP 7.0 and we have created a pull
+request back to the fork origin for that:
+
+https://github.com/casdr/weathermap/pull/1
+
+----
+
 This is  modified version of PHP Network Weathermap (orginal README is below)
 
 The modified version starts at version 0.1 by Neil Lathwood (neil@lathwood.co.uk) and currently includes basic support for picking out nodes and links from your observium install. See INSTALL for details.
@@ -31,7 +47,7 @@ jquery-latest.min.js is the jQuery javascript library - written by John Resig an
 http://docs.jquery.com/Licensing
 
 Some of the icons used in the editor, and also supplied in the images/ folder are
-from the excellent Fam Fam Fam Silk icon collection by Mark James: 
+from the excellent Fam Fam Fam Silk icon collection by Mark James:
    http://www.famfamfam.com/lab/icons/silk/
 These are released under the Creative Commons Attribution 2.5 License
    http://creativecommons.org/licenses/by/2.5/
