@@ -27,7 +27,7 @@ $weathermap_url = '/weathermap/';
 // and fix for includes being set incorrectly and changing map-poller to chdir from
 // where it's run.
 
-chdir(dirname($argv[0]));
+chdir(__DIR__);
 
 if (php_sapi_name() == 'cli') { 
 
